@@ -4,6 +4,14 @@ My personal setup to how I manage AI agents.
 
 The skills in this project are intended to be used with the following MCP servers.
 
+## Status Line
+
+Use the following prompt:
+
+```txt
+Clone https://github.com/daniel3303/ClaudeCodeStatusLine to ~/.claude/statusline/ (or %USERPROFILE%\.claude\statusline\ on Windows) and configure it as my status bar by following its INSTALL.md.
+```
+
 ## MCP Setup
 
 Placeholder
