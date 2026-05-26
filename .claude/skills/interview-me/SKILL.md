@@ -20,6 +20,8 @@ Announce: *"Let's see what you actually know. I'll ask up to 10 questions. Answe
 
 Ask **one question at a time** using `AskUserQuestion`. Wait for the answer before proceeding.
 
+> **Tool constraint**: `AskUserQuestion` requires at least 2 options. Always include exactly 2 dummy options — e.g. `{"label": "Answer below", "description": "Type your answer in the Other box"}` and `{"label": "(ignore this)", "description": "Use the Other field"}`. The user will always use the auto-added Other field to type their free-form answer.
+
 ### Question progression
 
 | Round | Focus | Style |
