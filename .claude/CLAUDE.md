@@ -8,3 +8,7 @@
 # Global Preferences
 
 - Keep explanations concise.
+
+# Engineering Preferences
+
+- To get a quick understanding of a repo, look at `CODEBASE.md` for a summary if it exists. If you already have enough context, can skip.
