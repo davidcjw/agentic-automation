@@ -2,14 +2,18 @@
 
 My personal setup to how I manage AI agents.
 
-The skills in this project are intended to be used with the following MCP servers.
-
 ## Enabling auto mode
 
 So here's what I found (I'm on Pro plan btw): auto-mode is not enabled by default. As in you can't even see it on the desktop app and on the cli. But after I ran the following command in the cli, i could cycle through (Shift-Tab) the modes and see auto-mode. I then restarted by desktop app and I could now see it on my desktop app. How bizaare?!
 
 ```bash
 claude --permission-mode auto
+```
+
+Set alias in `~/.zshrc`:
+
+```bash
+alias claude='claude --permission-mode auto'
 ```
 
 ## Status Line
@@ -55,5 +59,16 @@ claude mcp add-json github '{"type":"http","url":"https://api.githubcopilot.com/
 
 ## Files
 
-1. `./claude/CLAUDE.md`: User (global) specific instructions. Place it in `~/.claude`
+Symlink the following so that future updates to this repo is automatically updated.
+
+1. `./claude/CLAUDE.md`: User (global) specific instructions. Symlink it via:
+
+    ```bash
+    ln -s ~/path/to/.claude/CLAUDE.md ~/.claude/CLAUDE.md
+    ```
+
 2. `./claude/skills`: User (global) level skills. Place it in `~/.claude`
+
+    ```bash
+    ln -s ~/path/to/.claude/skills ~/.claude/skills
+    ```
