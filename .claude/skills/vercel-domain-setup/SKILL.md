@@ -46,13 +46,29 @@ Parse the JSON response for:
 - `verified` — whether Vercel already recognises the domain
 - `verification[]` — any TXT records needed for ownership verification
 
-### 3 — Determine DNS records
+### 3 — Fetch the actual DNS record values from Vercel
+
+> **Do NOT assume `cname.vercel-dns.com`.** Vercel assigns project-specific CNAMEs (e.g. `2955d56d754a85a5.vercel-dns-017.com`). Always read the values from the API after adding the domain.
+
+Call the domain config endpoint:
+
+```bash
+curl -s "https://api.vercel.com/v6/domains/{DOMAIN}/config?teamId={TEAM_ID}" \
+  -H "Authorization: Bearer $VERCEL_TOKEN"
+```
+
+Parse the response:
+- `cnames[0]` — the CNAME target to use for subdomains (e.g. `xxxxxxxx.vercel-dns-017.com`)
+- `aValues[0]` — the A record IP to use for apex domains (e.g. `76.76.21.21`)
+
+Also pull TXT verification records from the POST response in step 2:
+- `verification[]` — array of `{ type, domain, value }` objects
 
 | Domain type | DNS record | Name | Value |
 |---|---|---|---|
-| Apex (`example.com`) | A | `@` | `76.76.21.21` |
-| Subdomain (`app.example.com`) | CNAME | `app` | `cname.vercel-dns.com` |
-| Verification (if returned) | TXT | as given | as given |
+| Apex (`example.com`) | A | `@` | `aValues[0]` from config |
+| Subdomain (`app.example.com`) | CNAME | `app` | `cnames[0]` from config |
+| Verification (if returned) | TXT | as given by Vercel | as given by Vercel |
 
 The GoDaddy root domain is always the apex (e.g. `example.com`), even when adding a subdomain record.
 
@@ -61,10 +77,10 @@ The GoDaddy root domain is always the apex (e.g. `example.com`), even when addin
 Use `replace_dns_records` to ensure a clean single record (no duplicates):
 
 - **Apex A record:**
-  `replace_dns_records(domain="example.com", record_type="A", name="@", data="76.76.21.21", ttl=600)`
+  `replace_dns_records(domain="example.com", record_type="A", name="@", data="{aValues[0]}", ttl=600)`
 
-- **Subdomain CNAME:**
-  `replace_dns_records(domain="example.com", record_type="CNAME", name="app", data="cname.vercel-dns.com", ttl=600)`
+- **Subdomain CNAME** (use the value from `cnames[0]`, not a hardcoded default):
+  `replace_dns_records(domain="example.com", record_type="CNAME", name="app", data="{cnames[0]}", ttl=600)`
 
 - **Verification TXT** (if `verification[]` was non-empty):
   `add_dns_record(domain="example.com", record_type="TXT", name="{verification.domain minus root}", data="{verification.value}", ttl=600)`
@@ -118,3 +134,5 @@ Report:
 | `403` from Vercel API | CLI token expired — run `vercel login` to refresh |
 | `422` from GoDaddy | Record name includes the root domain — strip it (e.g. use `app` not `app.example.com`) |
 | GoDaddy `UNABLE_TO_AUTHENTICATE` | API key/secret wrong or using OTE (test) keys against production |
+| CNAME not working | Used the generic `cname.vercel-dns.com` instead of the project-specific CNAME from `cnames[0]` — fetch it from `/v6/domains/{domain}/config` |
+| Domain stuck unverified | TXT record added but Vercel wasn't polled — call `POST /v9/projects/{id}/domains/{domain}/verify` to trigger a recheck |
