@@ -31,6 +31,7 @@ Audit and enhance a README so it meets open-source community standards. Preserve
 5. If a standalone file exists (e.g. `CONTRIBUTING.md`), link to it instead of inlining
 6. For License: check LICENSE file for the license type; default to MIT if absent
 7. For badges: add at least a license badge after the title
+8. **Create `LICENSE` file** if it doesn't exist — write a plain text MIT License file at the repo root with the current year and the git user's name (from `git config user.name`). File must be named `LICENSE` with no extension.
 
 ## Section templates
 
@@ -68,5 +69,5 @@ Rules
 
 - Never delete or reorder existing sections
 - Match the heading style already used (# vs ##)
-- If the repo has no LICENSE file, note that one should be created and suggest MIT
+- Always create `LICENSE` if absent — do not just note it; write the file
 - Keep all additions concise — link out rather than inline large docs
