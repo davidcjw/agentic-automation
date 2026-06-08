@@ -1,17 +1,17 @@
 ---
 name: sg-price-check
-description: Scrape Singapore household appliance prices from Gain City, Harvey Norman, Courts, Best Denki, and Audio House by model number, then send a Telegram price comparison with direct product links. Use when user provides an appliance model number (e.g. RT47CG6444S9SS) and wants to compare Singapore retail prices, or says "price check", "compare prices", "cheapest price", or names any of these Singapore retailers.
+description: Scrape Singapore household appliance prices from Gain City, Harvey Norman, Courts, Best Denki, Audio House, and Mega Discount Store by model number, then send a Telegram price comparison with direct product links. Use when user provides an appliance model number (e.g. RT47CG6444S9SS) and wants to compare Singapore retail prices, or says "price check", "compare prices", "cheapest price", or names any of these Singapore retailers.
 ---
 
 # SG Appliance Price Checker
 
 ## Quick Start
 
-User provides a model number. Scrape all 5 retailers, collect prices + URLs, then send via Telegram.
+User provides a model number. Scrape all 6 retailers, collect prices + URLs, then send via Telegram.
 
 ## Step 1 — Search each retailer with Playwright
 
-For each retailer, navigate to the search URL, take a snapshot, find the exact model match, and extract price + product URL. Work through all 5 retailers sequentially.
+For each retailer, navigate to the search URL, take a snapshot, find the exact model match, and extract price + product URL. Work through all 6 retailers sequentially.
 
 | Retailer | Search URL | Notes |
 |---|---|---|
@@ -20,6 +20,7 @@ For each retailer, navigate to the search URL, take a snapshot, find the exact m
 | Courts | `https://www.courts.com.sg/catalogsearch/result/?q={MODEL}` | Magento — often redirects directly to product page |
 | Best Denki | `https://www.bestdenki.com.sg/catalogsearch/result/?q={MODEL}` | Magento — renders product list in DOM |
 | Audio House | `https://audiohouse.com.sg/?s={MODEL}&post_type=product` | WordPress/WooCommerce — check if model appears in results |
+| Mega Discount Store | `https://megadiscountstore.com.sg/search?type=product&q={MODEL}` | Shopify — page title shows result count. Use `browser_evaluate` with `document.querySelector('main').querySelectorAll('a[href*="/products/"]')` to find product links; check `.textContent` for exact model match before extracting price |
 
 For each site:
 1. Navigate to the search URL with the model number substituted
