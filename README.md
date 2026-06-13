@@ -72,3 +72,18 @@ Symlink the following so that future updates to this repo is automatically updat
     ```bash
     ln -s ~/path/to/.claude/skills ~/.claude/skills
     ```
+
+## Git Hooks
+
+`git-hooks/commit-msg` strips AI attribution (`Co-Authored-By: Claude/Anthropic` trailers and `Generated with Claude Code` lines) from every commit message, in every repo. It delegates to a repo-local `commit-msg` hook first if one exists, so project-specific hooks still run.
+
+Enable it globally by pointing git's `core.hooksPath` at a hooks dir and symlinking the hook in (so repo updates sync automatically):
+
+```bash
+mkdir -p ~/.config/git/hooks
+ln -s ~/path/to/agentic-automation/git-hooks/commit-msg ~/.config/git/hooks/commit-msg
+chmod +x ~/path/to/agentic-automation/git-hooks/commit-msg
+git config --global core.hooksPath ~/.config/git/hooks
+```
+
+> Note: `core.hooksPath` overrides each repo's `.git/hooks`. The delegation above preserves repo-local `commit-msg` hooks, but other hook types (e.g. `pre-commit`) in individual repos won't run unless you also place them in this dir.
