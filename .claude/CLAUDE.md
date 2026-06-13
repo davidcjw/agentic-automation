@@ -13,3 +13,7 @@
 
 - To get a quick understanding of a repo, look at `CODEBASE.md` for a summary if it exists. If you already have enough context, can skip.
 - If deploying to Vercel, always ensure a favicon exists and `README.md` is updated.
+
+# Hygiene
+
+- When creating tmp folders/files, ensure to always tidy them up (i.e. delete) before task completion.
