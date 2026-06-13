@@ -1,0 +1,24 @@
+#!/bin/sh
+# Strip AI attribution from commit messages globally.
+# Removes Co-Authored-By: Claude/Anthropic trailers and "Generated with Claude Code" lines.
+
+msg_file="$1"
+
+# Delegate to a repo-local commit-msg hook first, if one exists, so this
+# global hook doesn't silently clobber project-specific behavior.
+repo_hook="$(git rev-parse --git-path hooks/commit-msg 2>/dev/null)"
+if [ -n "$repo_hook" ] && [ -x "$repo_hook" ] && [ "$repo_hook" != "$0" ]; then
+	"$repo_hook" "$@" || exit $?
+fi
+
+tmp="$msg_file.tmp.$$"
+
+# Drop offending lines (case-insensitive), then remove any trailing blank lines.
+grep -viE '^[[:space:]]*Co-Authored-By:[[:space:]]*(Claude|Anthropic)' "$msg_file" \
+	| grep -viE 'Generated with \[?Claude Code' \
+	| grep -viE '^[[:space:]]*🤖[[:space:]]*Generated with' \
+	| awk 'NF{ for(;n>0;n--) print ""; print; next } { n++ }' \
+	> "$tmp"
+
+mv "$tmp" "$msg_file"
+exit 0
