@@ -17,18 +17,25 @@ User says: "session handoff", "wrap up session", "hand off", "handoff summary", 
 
 1. **Review the full conversation**, not just the last few turns. Handoffs miss things when they only summarize recent context.
 2. **Pull state from these sources (in order):**
-   - Plan files referenced this session (check `C:\Users\nateh\.claude\plans\` if a plan was mentioned).
+   - Plan files referenced this session (check `~/.claude/plans/` if a plan was mentioned).
    - TodoWrite state — any in-progress or pending tasks.
    - Background processes you started with `run_in_background` — shell IDs are load-bearing for the next agent.
    - Files created or modified this session — you know what you touched; don't grep to re-discover.
-   - Memory files written or updated (`C:\Users\nateh\.claude\projects\<project>\memory\`).
+   - Memory files written or updated (`~/.claude/projects/<project>/memory/`).
    - Unresolved questions — things you asked the user that never got a clear answer, or things the user asked that got deflected.
-3. **Do NOT audit the filesystem.** This is synthesis of what happened in THIS session. No `git log`, no broad `Glob` sweeps. If you didn't touch it this session, it doesn't belong here.
-4. **Produce the output in chat.** Do not write a file. Do not update memory. Chat-only.
+3. **Update README.md and/or AGENTS.md if the session changed anything they should document.** Read both files first. Make targeted edits — do not rewrite them wholesale. Criteria for updating:
+   - **AGENTS.md** — new components, new patterns, new easter eggs, new commands, new conventions, or anything an AI agent working this codebase next session needs to know.
+   - **README.md** — new features visible to a human reader of the repo (user-facing functionality, setup changes, new pages or routes).
+   - If neither file needs updating, skip this step — don't touch them for the sake of it.
+   - After editing, commit and push the changes (do not leave them staged or unstaged).
+4. **Do NOT audit the filesystem.** This is synthesis of what happened in THIS session. No `git log`, no broad `Glob` sweeps. If you didn't touch it this session, it doesn't belong here.
+5. **Produce the output in chat.** Do not write a file. Do not update memory. Chat-only.
 
 ## Output template — use exactly this structure, every time
 
-```
+Wrap the entire output in a single fenced code block (` ```md `) so the UI renders a one-click copy button. The content inside is plain Markdown.
+
+````md
 # Session Handoff — <one-line title of what this session was about>
 
 ## Where it started
@@ -58,7 +65,7 @@ User says: "session handoff", "wrap up session", "hand off", "handoff summary", 
 
 ## Pick up here
 <1-2 sentences: the single most likely next action for a fresh agent>
-```
+````
 
 ## Hard rules
 
