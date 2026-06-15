@@ -1,5 +1,8 @@
 # Agentic Automation
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Claude Code](https://img.shields.io/badge/Claude%20Code-config-orange)
+
 My personal setup to how I manage AI agents.
 
 ## Enabling auto mode
@@ -87,3 +90,16 @@ git config --global core.hooksPath ~/.config/git/hooks
 ```
 
 > Note: `core.hooksPath` overrides each repo's `.git/hooks`. The delegation above preserves repo-local `commit-msg` hooks, but other hook types (e.g. `pre-commit`) in individual repos won't run unless you also place them in this dir.
+
+## Contributing
+
+This is a personal setup, but suggestions are welcome — open an issue to share an idea or a fix.
+
+## Code of Conduct
+
+This project follows the [Contributor Covenant v2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+By participating you agree to uphold a welcoming, harassment-free environment.
+
+## License
+
+Distributed under the MIT License. See [LICENSE](LICENSE) for details.
