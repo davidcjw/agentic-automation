@@ -1,0 +1,19 @@
+# Third-party hyperframes skills (heygen-com/hyperframes)
+# Real files live in ~/code/third-party-repos/hyperframes; these are symlinks.
+.claude/skills/hyperframes
+.claude/skills/hyperframes-animation
+.claude/skills/hyperframes-cli
+.claude/skills/hyperframes-core
+.claude/skills/hyperframes-creative
+.claude/skills/hyperframes-media
+.claude/skills/hyperframes-registry
+.claude/skills/embedded-captions
+.claude/skills/faceless-explainer
+.claude/skills/general-video
+.claude/skills/graphic-overlays
+.claude/skills/motion-graphics
+.claude/skills/pr-to-video
+.claude/skills/product-launch-video
+.claude/skills/remotion-to-hyperframes
+.claude/skills/website-to-video
+.claude/skills/video-use
