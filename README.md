@@ -5,18 +5,16 @@
 
 My personal setup to how I manage AI agents.
 
-## Enabling auto mode
-
-So here's what I found (I'm on Pro plan btw): auto-mode is not enabled by default. As in you can't even see it on the desktop app and on the cli. But after I ran the following command in the cli, i could cycle through (Shift-Tab) the modes and see auto-mode. I then restarted by desktop app and I could now see it on my desktop app. How bizaare?!
+## Enabling auto mode and remote-control by default
 
 ```bash
-claude --permission-mode auto
+claude --permission-mode auto --rc
 ```
 
 Set alias in `~/.zshrc`:
 
 ```bash
-alias claude='claude --permission-mode auto'
+alias claude='claude --permission-mode auto --rc'
 ```
 
 ## Status Line
