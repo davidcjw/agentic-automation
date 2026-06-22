@@ -1,6 +1,6 @@
 ---
 name: opensource-readme
-description: Transforms a project's README into an open-source-ready format by auditing existing content and adding missing standard sections (License, Contributing, Code of Conduct, Badges, Installation, Usage, Roadmap, Acknowledgements), embedding a demo GIF/screenshot where relevant, and adding relevant topic tags to the GitHub repo. Use when user wants to open-source a project, make a README complete, prepare a repo for public release, or asks to "add open source sections", "make this open source ready", or "improve the README".
+description: Transforms a project's README into an open-source-ready format by auditing existing content and adding missing standard sections (License, Contributing, Code of Conduct, Badges, Installation, Usage, Roadmap, Acknowledgements), embedding a demo GIF/screenshot where relevant, ensuring a favicon and Open Graph image are present for frontend projects, and setting the GitHub repo description plus relevant topic tags. Use when user wants to open-source a project, make a README complete, prepare a repo for public release, or asks to "add open source sections", "make this open source ready", or "improve the README".
 ---
 
 # Open Source README
@@ -34,7 +34,9 @@ Audit and enhance a README so it meets open-source community standards. Preserve
 7. For badges: add at least a license badge after the title
 8. **Create `LICENSE` file** if it doesn't exist — write a plain text MIT License file at the repo root with the current year and the git user's name (from `git config user.name`). File must be named `LICENSE` with no extension.
 9. **Embed a demo GIF/screenshot** near the top (see *Demo GIF*) — reuse an existing asset if present; otherwise add a placeholder and tell the user where to drop a recording.
-10. **Add repo topics** on GitHub (see *Repo topics*) — derive relevant tags from the stack and domain, then apply with `gh`.
+10. **Set repo description** on GitHub (see *Repo description*) — derive a concise tagline, then apply with `gh`.
+11. **Add repo topics** on GitHub (see *Repo topics*) — derive relevant tags from the stack and domain, then apply with `gh`.
+12. **Check web assets** if the project ships a website/frontend (see *Web assets*) — ensure a favicon and an Open Graph image are present and wired up.
 
 ## Section templates
 
@@ -88,6 +90,18 @@ Embed a visual demo high up so visitors see the project in action before reading
 3. **Never fabricate or hotlink** an unrelated image. If no asset exists, insert the placeholder pointing at `docs/demo.gif` and tell the user to record a short clip (e.g. with [vhs](https://github.com/charmbracelet/vhs) for CLIs, or a screen recorder → GIF) and drop it at that path.
 4. GitHub renders `.gif` inline; for `.mp4`, upload it to a release/issue and use the resulting `user-images.githubusercontent.com` URL instead of a repo path.
 
+## Repo description
+
+Set the GitHub repo's "About" description so visitors and search see what it is.
+
+1. **Derive a concise tagline** (≤120 chars) from the README's description/tagline — say what the project does, not how it's built. Reuse the README's one-liner if it's good.
+2. **Apply** from the repo root:
+```bash
+gh repo edit --description "Fast OSRS gear & DPS calculator built with Next.js"
+```
+3. **Verify**: `gh repo view --json description -q '.description'`
+4. If `gh` isn't installed/authed or there's no GitHub remote, **don't fail** — show the suggested description and tell the user to set it via the repo's **About → ⚙**.
+
 ## Repo topics
 
 Add GitHub topics so the repo is discoverable.
@@ -101,6 +115,22 @@ gh repo edit --add-topic nextjs,typescript,tailwindcss,osrs,calculator
 4. **Verify**: `gh repo view --json repositoryTopics -q '.repositoryTopics[].name'`
 5. If `gh` isn't installed/authed or there's no GitHub remote, **don't fail** — list the suggested topics and tell the user to add them via the repo's **About → ⚙ → Topics**.
 
+## Web assets
+
+Only if the project ships a website/frontend (e.g. a `public/`, `static/`, `app/`, or `index.html` exists). Skip for pure CLIs/libraries.
+
+### Favicon
+
+1. **Check it exists**: look for `favicon.ico` / `favicon.svg` / `favicon.png` under `public/`, `static/`, `app/`, or the site root, and a `<link rel="icon">` (or framework metadata like Next.js `app/icon.*` / `metadata.icons`) wiring it in.
+2. **If missing**, add one — reuse an existing logo/mark if present (convert to `favicon.ico`/`favicon.svg`); otherwise drop a placeholder and tell the user to supply a brand mark. Wire it into the `<head>` or framework metadata.
+
+### Open Graph image
+
+1. **Check it exists**: look for an OG image (`og-image.png`, `opengraph-image.*`, social-card asset, ~1200×630) and the `<meta property="og:image">` + `<meta name="twitter:image">` tags (or framework metadata like Next.js `app/opengraph-image.*` / `metadata.openGraph.images`).
+2. **Verify the full OG/Twitter set** is present: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, and `twitter:card` (`summary_large_image`).
+3. **If missing**, add the meta tags and reference an OG image — reuse a screenshot/demo asset if suitable, or add a `public/og-image.png` placeholder (1200×630) and tell the user to replace it. Use an absolute URL for `og:image` (relative paths don't preview on most platforms).
+4. **Never fabricate or hotlink** an unrelated image — use a placeholder path if no asset exists.
+
 ## Rules
 
 - Never delete or reorder existing sections
@@ -109,3 +139,5 @@ gh repo edit --add-topic nextjs,typescript,tailwindcss,osrs,calculator
 - Keep all additions concise — link out rather than inline large docs
 - Demo: reuse existing media; never fabricate or hotlink unrelated images — use the placeholder path if none exists
 - Topics: lowercase + hyphens, ≤20, relevant to stack/domain; use `--add-topic` (never replace existing topics)
+- Description: ≤120 chars, says what the project does; reuse the README tagline; never fail if `gh`/remote is unavailable — surface the suggestion instead
+- Web assets: only for projects shipping a frontend; ensure favicon + OG image exist and are wired into `<head>`/framework metadata; reuse existing brand assets, never fabricate or hotlink; use absolute URLs for `og:image`

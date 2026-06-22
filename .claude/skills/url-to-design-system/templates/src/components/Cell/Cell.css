@@ -1,0 +1,47 @@
+.__NS__-cell {
+  --__NS__-cell-size: var(--__NS__-module);
+  box-sizing: border-box;
+  width: var(--__NS__-cell-size);
+  height: var(--__NS__-cell-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--__NS__-border);
+  border-radius: var(--__NS__-radius);
+  background-color: var(--__NS__-paper);
+  color: var(--__NS__-ink);
+  font-family: var(--__NS__-font);
+  font-size: var(--__NS__-fs-body);
+  line-height: 1;
+  text-decoration: none;
+  user-select: none;
+  transition: background-color var(--__NS__-dur) var(--__NS__-ease),
+    color var(--__NS__-dur) var(--__NS__-ease);
+}
+
+/* normalize when rendered as <button> */
+.__NS__-cell:is(button) {
+  padding: 0;
+  cursor: default;
+  appearance: none;
+  font: inherit;
+}
+
+.__NS__-cell--interactive {
+  cursor: pointer;
+}
+
+.__NS__-cell--interactive:hover,
+.__NS__-cell--active {
+  background-color: var(--__NS__-ink);
+  color: var(--__NS__-paper);
+}
+
+.__NS__-cell--muted {
+  color: var(--__NS__-muted);
+}
+
+.__NS__-cell:focus-visible {
+  outline: var(--__NS__-border-width) solid var(--__NS__-ink);
+  outline-offset: 2px;
+}
