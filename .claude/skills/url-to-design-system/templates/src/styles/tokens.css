@@ -1,0 +1,43 @@
+/* ============================================================
+   __PKG__ — design tokens
+   Extracted from __SOURCE_URL__.
+   Fill these from the distilled extract-tokens.mjs output. Keep the set
+   SMALL and named by ROLE (paper/ink/hairline), not by raw value. Every
+   component references these — never a raw color/size.
+   ============================================================ */
+
+:root {
+  /* — Color (role-named; ~3-6 total for a coherent system) — */
+  --__NS__-paper: __PAPER__;       /* page / surface background */
+  --__NS__-ink: __INK__;           /* primary text / foreground */
+  --__NS__-hairline: __HAIRLINE__; /* borders, rules, subtle lines */
+  --__NS__-muted: __MUTED__;       /* disabled / secondary */
+  --__NS__-accent: __ACCENT__;     /* one accent, if the site has one */
+
+  /* — Typography — */
+  --__NS__-font: __FONT_STACK__;
+  --__NS__-fs-display: __FS_DISPLAY__;  /* hero / large headings */
+  --__NS__-fs-title: __FS_TITLE__;
+  --__NS__-fs-body: __FS_BODY__;        /* base */
+  --__NS__-fs-micro: __FS_MICRO__;      /* captions / labels */
+  --__NS__-leading: __LEADING__;
+
+  /* — Grid & space (one module unit + a gutter) — */
+  --__NS__-module: __MODULE__;       /* the dominant spacing/grid unit */
+  --__NS__-gutter: __GUTTER__;
+  --__NS__-border-width: __BORDER_WIDTH__;
+  --__NS__-border: var(--__NS__-border-width) solid var(--__NS__-hairline);
+  --__NS__-radius: __RADIUS__;
+
+  /* — Motion — */
+  --__NS__-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --__NS__-dur: 200ms;
+}
+
+/* Optional full-surface reset for consumers who want the page look. */
+.__NS__-surface {
+  background-color: var(--__NS__-paper);
+  color: var(--__NS__-ink);
+  font-family: var(--__NS__-font);
+  font-size: var(--__NS__-fs-body);
+}

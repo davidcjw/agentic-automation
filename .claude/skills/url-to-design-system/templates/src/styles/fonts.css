@@ -1,0 +1,8 @@
+/* The system's typeface(s). Read the source's computed `font-family`.
+   • FREE family (on Google Fonts): set __GOOGLE_FONT__ to its query
+     (e.g. "IBM+Plex+Mono:wght@300;400;500;600;700") and keep the @import.
+   • LICENSED/proprietary family (Söhne, GT, brand-custom — NOT on Google
+     Fonts): you CANNOT @import it. Name it first in the token stack so
+     licensed consumers get it, then load the closest FREE substitute here
+     instead and document the swap in README + AGENTS. */
+@import url("https://fonts.googleapis.com/css2?family=__GOOGLE_FONT__&display=swap");
