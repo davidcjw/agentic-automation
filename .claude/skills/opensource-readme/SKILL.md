@@ -14,6 +14,7 @@ Audit and enhance a README so it meets open-source community standards. Preserve
 | Badges | Recommended | License, CI status, version |
 | Description | Required | 1–2 sentence tagline |
 | Demo (GIF/screenshot) | Recommended | Near the top, right after badges/description |
+| Architecture diagram | Optional | Only for complex multi-component projects (see *Architecture diagram*) |
 | Table of Contents | If README > 80 lines | |
 | Installation | Required | |
 | Usage | Required | At least one example |
@@ -37,6 +38,7 @@ Audit and enhance a README so it meets open-source community standards. Preserve
 10. **Set repo description** on GitHub (see *Repo description*) — derive a concise tagline, then apply with `gh`.
 11. **Add repo topics** on GitHub (see *Repo topics*) — derive relevant tags from the stack and domain, then apply with `gh`.
 12. **Check web assets** if the project ships a website/frontend (see *Web assets*) — ensure a favicon and an Open Graph image are present and wired up.
+13. **(Optional) Add an architecture diagram** if the repo has many components that interact (see *Architecture diagram*) — only for genuinely complex projects with several moving parts.
 
 ## Section templates
 
@@ -89,6 +91,22 @@ Embed a visual demo high up so visitors see the project in action before reading
 2. **Place it** right after the badges/description, before the Table of Contents, using the centered template above. Always set descriptive `alt` text; a width of 600–720 reads well on GitHub.
 3. **Never fabricate or hotlink** an unrelated image. If no asset exists, insert the placeholder pointing at `docs/demo.gif` and tell the user to record a short clip (e.g. with [vhs](https://github.com/charmbracelet/vhs) for CLIs, or a screen recorder → GIF) and drop it at that path.
 4. GitHub renders `.gif` inline; for `.mp4`, upload it to a release/issue and use the resulting `user-images.githubusercontent.com` URL instead of a repo path.
+
+## Architecture diagram
+
+**Optional — skip for simple projects.** Only create this when the repo has **many components that interact with each other** (e.g. multiple services, a frontend + backend + workers + queue + DB, several packages in a monorepo, or non-trivial data/request flow worth visualizing). A single CLI, library, or small app does **not** need one.
+
+1. **Judge complexity first.** Map the components and how they talk to each other. If there are only one or two moving parts, stop — no diagram.
+2. **If complex enough**, build a high-level diagram showing **data/request flow** between the major components (services, stores, external APIs, etc.) — not a class-level UML, just the architecture at a glance.
+3. **Create it with Excalidraw** (use the Excalidraw MCP tools). Export the diagram and save the image under `docs/` (e.g. `docs/architecture.png`), then embed it in the README under an `## Architecture` heading:
+```md
+## Architecture
+
+<p align="center">
+  <img src="docs/architecture.png" alt="<Project name> architecture" width="720">
+</p>
+```
+4. **Never fabricate** components that don't exist — base the diagram on what's actually in the repo.
 
 ## Repo description
 
