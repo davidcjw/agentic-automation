@@ -17,3 +17,6 @@
 .claude/skills/remotion-to-hyperframes
 .claude/skills/website-to-video
 .claude/skills/video-use
+
+# python-related
+*.pyc
