@@ -1,6 +1,6 @@
 ---
 name: send-telegram
-description: Send arbitrary text to the user's Telegram chat via a bot. Reads the bot token and chat ID from a .env or .env.local file in the directory the skill is invoked from. Use when the user wants to send/push a message, note, alert, result, or notification to Telegram, says "send this to my telegram", "telegram me", "ping me on telegram", or "notify me on telegram".
+description: Send arbitrary text or images to the user's Telegram chat via a bot. Reads the bot token and chat ID from a .env or .env.local file in the directory the skill is invoked from. Use when the user wants to send/push a message, note, alert, result, image, screenshot, or notification to Telegram, says "send this to my telegram", "telegram me", "ping me on telegram", or "notify me on telegram".
 ---
 
 # Send to Telegram
@@ -39,7 +39,7 @@ TELEGRAM_CHAT_ID=987654321
 > chat ID, so this skill assumes the token lives in the same `.env`/`.env.local`.
 > If the script reports a missing token, ask the user where it is (or pass `--token`).
 
-## Usage
+## Sending a text message
 
 Message text comes from `--text`, or from **stdin** if `--text` is omitted (so you
 can pipe multi-line / arbitrary input). Run from the directory containing the `.env`:
@@ -66,10 +66,41 @@ python3 ~/.claude/skills/send-telegram/scripts/send.py \
 | `--chat-id <s>` | Override the chat ID (else from env / `.env`). |
 | `--parse-mode <m>` | `HTML`, `MarkdownV2`, or `Markdown`. Omit for plain text (safest — no escaping pitfalls with arbitrary input). |
 
+## Sending an image
+
+Use `send_photo.py` to upload a local image file (PNG, JPG, etc.) via Telegram's
+`sendPhoto` API. Pass the image path as a positional argument:
+
+```bash
+# send an image with no caption
+python3 ~/.claude/skills/send-telegram/scripts/send_photo.py /path/to/image.png
+
+# send with a caption
+python3 ~/.claude/skills/send-telegram/scripts/send_photo.py /path/to/image.png \
+  --caption "Daily report 📊"
+
+# point at a different .env location
+python3 ~/.claude/skills/send-telegram/scripts/send_photo.py /path/to/image.png \
+  --caption "Chart" --env-dir /path/to/project
+```
+
+### Options
+
+| Flag | Purpose |
+|------|---------|
+| `image` | (positional) Path to the local image file to send. |
+| `--caption <s>` | Optional caption text shown below the image. |
+| `--env-dir <dir>` | Where to find `.env` / `.env.local` (default: cwd). |
+| `--token <s>` | Override the bot token (else from env / `.env`). |
+| `--chat-id <s>` | Override the chat ID (else from env / `.env`). |
+
+Telegram's file-size limit for photos sent via `sendPhoto` is **10 MB**. For larger
+files use `sendDocument` instead (not yet implemented here).
+
 ## Notes
 
-- Plain text is the default. Only pass `--parse-mode` when the message is known-good
-  HTML/Markdown; otherwise Telegram may reject unescaped special characters.
-- The script is stdlib-only (no `pip install`). Requires Python 3.
-- On success it prints the sent `message_id`; on failure it prints Telegram's error
-  JSON and exits non-zero.
+- Both scripts are stdlib-only (no `pip install`). Requires Python 3.
+- On success each script prints the sent `message_id`; on failure it prints Telegram's
+  error JSON and exits non-zero.
+- Plain text is the default for `send.py`. Only pass `--parse-mode` when the message
+  is known-good HTML/Markdown; otherwise Telegram may reject unescaped special characters.
