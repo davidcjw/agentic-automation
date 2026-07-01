@@ -34,7 +34,7 @@ Audit and enhance a README so it meets open-source community standards. Preserve
 6. For License: check LICENSE file for the license type; default to MIT if absent
 7. For badges: add at least a license badge after the title
 8. **Create `LICENSE` file** if it doesn't exist — write a plain text MIT License file at the repo root with the current year and the git user's name (from `git config user.name`). File must be named `LICENSE` with no extension.
-9. **Embed a demo GIF/screenshot** near the top (see *Demo GIF*) — reuse an existing asset if present; otherwise add a placeholder and tell the user where to drop a recording.
+9. **Embed a demo GIF/screenshot** near the top (see *Demo GIF*) — reuse an existing GIF/screenshot if present; else if a screen **recording** exists, convert it to `docs/demo.gif` via the `recording-to-gif` skill; otherwise add a placeholder and tell the user where to drop a recording.
 10. **Set repo description** on GitHub (see *Repo description*) — derive a concise tagline, then apply with `gh`.
 11. **Add repo topics** on GitHub (see *Repo topics*) — derive relevant tags from the stack and domain, then apply with `gh`.
 12. **Check web assets** if the project ships a website/frontend (see *Web assets*) — ensure a favicon and an Open Graph image are present and wired up.
@@ -87,9 +87,10 @@ Distributed under the MIT License. See [LICENSE](LICENSE) for details.
 
 Embed a visual demo high up so visitors see the project in action before reading.
 
-1. **Reuse an existing asset first.** Search the repo for a demo recording or screenshot — `*.gif`, `*.mp4`, `*.webm`, or screenshots under `assets/`, `docs/`, `media/`, `.github/`, `public/`, `screenshots/`. Pick the most demo-like one.
-2. **Place it** right after the badges/description, before the Table of Contents, using the centered template above. Always set descriptive `alt` text; a width of 600–720 reads well on GitHub.
-3. **Never fabricate or hotlink** an unrelated image. If no asset exists, insert the placeholder pointing at `docs/demo.gif` and tell the user to record a short clip (e.g. with [vhs](https://github.com/charmbracelet/vhs) for CLIs, or a screen recorder → GIF) and drop it at that path.
+1. **Reuse an existing GIF/screenshot first.** Search the repo for `*.gif` or screenshots under `assets/`, `docs/`, `media/`, `.github/`, `public/`, `screenshots/`. Pick the most demo-like one.
+2. **Else, if a screen recording exists, convert it.** If there's no GIF but a video recording is present (`*.mov`, `*.mp4`, `*.webm`, … in the repo, or a recent macOS screen recording on `~/Desktop`), invoke the **`recording-to-gif`** skill to produce `docs/demo.gif`, then embed that. Only convert a recording that's clearly the project's demo — if it's ambiguous, ask the user. **If no recording exists, skip this and go to step 4 (placeholder).**
+3. **Place it** right after the badges/description, before the Table of Contents, using the centered template above. Always set descriptive `alt` text; a width of 600–720 reads well on GitHub.
+4. **Never fabricate or hotlink** an unrelated image. If no GIF and no recording exist, insert the placeholder pointing at `docs/demo.gif` and tell the user to record a short clip (e.g. with [vhs](https://github.com/charmbracelet/vhs) for CLIs, or a screen recorder → GIF) and drop it at that path — `recording-to-gif` will convert it next run.
 4. GitHub renders `.gif` inline; for `.mp4`, upload it to a release/issue and use the resulting `user-images.githubusercontent.com` URL instead of a repo path.
 
 ## Architecture diagram
