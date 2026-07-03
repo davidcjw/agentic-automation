@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  shellcheck:
+    name: ShellCheck (.sh + git-hooks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Lint shell scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          status=0
+          while IFS= read -r -d '' f; do
+            echo "shellcheck $f"
+            shellcheck "$f" || status=1
+          done < <(find . -name '*.sh' -not -path './node_modules/*' -print0)
+          if [ -f git-hooks/commit-msg ]; then
+            echo "shellcheck git-hooks/commit-msg"
+            shellcheck git-hooks/commit-msg || status=1
+          fi
+          exit "$status"
+
+  hooks-syntax:
+    name: Hook syntax (node --check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: node --check every hook
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            echo "node --check $f"
+            node --check "$f"
+          done < <(find .claude/hooks -name '*.mjs' -print0)
+      - name: Run node --test suite (if any *.test.mjs exists)
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find . -name '*.test.mjs' -not -path './node_modules/*' | grep -q .; then
+            echo "Test files found — running node --test"
+            node --test
+          else
+            echo "No *.test.mjs files found — skipping node --test"
+          fi
+
+  json-validate:
+    name: JSON parses
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: JSON.parse every *.json
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            echo "validating $f"
+            node -e 'const fs=require("fs");JSON.parse(fs.readFileSync(process.argv[1],"utf8"))' "$f"
+          done < <(find . -name '*.json' -not -path './node_modules/*' -print0)

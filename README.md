@@ -2,8 +2,11 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-config-orange)
+[![CI](https://github.com/davidcjw/agentic-automation/actions/workflows/ci.yml/badge.svg)](https://github.com/davidcjw/agentic-automation/actions/workflows/ci.yml)
 
 My personal setup to how I manage AI agents.
+
+> **CI:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request — shellcheck on all `*.sh` and `git-hooks/commit-msg`, `node --check` on every `.claude/hooks/*.mjs`, and a `JSON.parse` validation of every `*.json`.
 
 ## Enabling auto mode and remote-control by default
 
