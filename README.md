@@ -62,10 +62,13 @@ claude mcp add-json github '{"type":"http","url":"https://api.githubcopilot.com/
 
 Symlink the following so that future updates to this repo is automatically updated.
 
-1. `./claude/CLAUDE.md`: User (global) specific instructions. Symlink it via:
+1. `./claude/CLAUDE.md`: User (global) specific instructions, plus the on-demand reference docs it points to (`SUPABASE.md`, `DESIGN_SYSTEMS.md`) — loaded only when a task is relevant, to keep `CLAUDE.md` lean. Symlink each:
 
     ```bash
-    ln -s ~/path/to/.claude/CLAUDE.md ~/.claude/CLAUDE.md
+    R=~/path/to/agentic-automation
+    for f in CLAUDE.md SUPABASE.md DESIGN_SYSTEMS.md; do
+      ln -s "$R/.claude/$f" ~/.claude/"$f"
+    done
     ```
 
 2. `./claude/skills`: User (global) level skills. Place it in `~/.claude`
