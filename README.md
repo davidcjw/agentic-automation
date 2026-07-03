@@ -74,6 +74,48 @@ Symlink the following so that future updates to this repo is automatically updat
     ln -s ~/path/to/.claude/skills ~/.claude/skills
     ```
 
+3. `./.claude/hooks/*.mjs`, `./.claude/rules/development.md`, `./.claude/templates/ci.yml`: hook scripts, the dev-workflow rule, and the CI template. Symlink each file back (per-file, so plugin-managed files like `context-mode-cache-heal.mjs` stay local):
+
+    ```bash
+    R=~/path/to/agentic-automation
+    for f in hooks/bash-guardrails.mjs hooks/vercel-predeploy-gate.mjs \
+             hooks/format-touched-file.mjs hooks/lint-typecheck-gate.mjs \
+             hooks/test-gate.mjs hooks/py-test-gate.mjs \
+             rules/development.md templates/ci.yml; do
+      mkdir -p ~/.claude/"$(dirname "$f")"
+      ln -s "$R/.claude/$f" ~/.claude/"$f"
+    done
+    ```
+
+## Hooks
+
+Deterministic quality gates and guardrails, wired in `~/.claude/settings.json`. Scripts are zero-dep Node (`.mjs`) and **fail-open** — a broken hook never blocks a session. Reference snippet to merge into a fresh `settings.json`: [`.claude/settings.hooks.json`](.claude/settings.hooks.json).
+
+**Always-on (global):**
+
+| Hook | Event | What it does |
+|------|-------|--------------|
+| `bash-guardrails.mjs` | PreToolUse:Bash | Blocks banned GitHub topics, `git add .env`, and `git push origin main/master` |
+| `vercel-predeploy-gate.mjs` | PreToolUse:Bash | On `vercel … --prod`: blocks the deploy if no favicon exists or `npm test` fails |
+| `format-touched-file.mjs` | PostToolUse:Edit\|Write | Runs the repo's local prettier on the file just edited (no-op if none) |
+| `lint-typecheck-gate.mjs` | Stop | When code changed in a git repo, runs `npm run lint`/`typecheck`; blocks turn-end on failure |
+
+**Opt-in per repo** — drop a `settings.local.json` (gitignored / personal, not committed) into the repo:
+
+- `test-gate.mjs` — runs `npm test` on turn-end when code changed. Template: [`.claude/templates/settings.local.node.json`](.claude/templates/settings.local.node.json)
+- `py-test-gate.mjs` — runs the repo `.venv`'s ruff + pytest. Template: [`.claude/templates/settings.local.python.json`](.claude/templates/settings.local.python.json)
+
+```bash
+cp ~/path/to/agentic-automation/.claude/templates/settings.local.node.json <repo>/.claude/settings.local.json
+```
+
+Currently gated (recreate these `settings.local.json` files on a new machine):
+
+- Node (`test-gate`): `questlog`, `portcull`, `ctxbudget`, `agentmeter`, `agentwatch`, `nlb-library-mcp`
+- Python (`py-test-gate`): `mcp-eval`, `godaddy-mcp`
+
+> `settings.hooks.json` and the `settings.local.*.json` templates are references only — Claude Code does not load them directly. The live global wiring lives in your machine-local `~/.claude/settings.json` (deliberately kept out of this repo so per-machine settings stay independent).
+
 ## Git Hooks
 
 `git-hooks/commit-msg` strips AI attribution (`Co-Authored-By: Claude/Anthropic` trailers and `Generated with Claude Code` lines) from every commit message, in every repo. It delegates to a repo-local `commit-msg` hook first if one exists, so project-specific hooks still run.

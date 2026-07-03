@@ -1,0 +1,29 @@
+{
+  "_comment": "NOT loaded by Claude Code. This is a reference snippet — merge the keys under 'hooks' into your local ~/.claude/settings.json 'hooks' object on a new machine. SessionStart (context-mode) is managed separately by that plugin, so it's omitted here. The per-repo Stop test-gates (test-gate.mjs / py-test-gate.mjs) are opt-in via each repo's own .claude/settings.local.json — see templates/ and the README.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "node \"$HOME/.claude/hooks/bash-guardrails.mjs\"" },
+          { "type": "command", "command": "node \"$HOME/.claude/hooks/vercel-predeploy-gate.mjs\"" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          { "type": "command", "command": "node \"$HOME/.claude/hooks/format-touched-file.mjs\"" }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node \"$HOME/.claude/hooks/lint-typecheck-gate.mjs\"" }
+        ]
+      }
+    ]
+  }
+}
