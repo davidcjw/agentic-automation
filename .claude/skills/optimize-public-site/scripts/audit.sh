@@ -22,6 +22,7 @@ curl -sSI "$URL" | grep -iE \
 
 line "Lighthouse (seo, performance, best-practices)"
 if command -v lighthouse >/dev/null 2>&1 || command -v npx >/dev/null 2>&1; then
+  # shellcheck disable=SC2016  # node -e body is intentionally single-quoted; no shell expansion wanted
   npx --yes lighthouse "$URL" \
     --only-categories=seo,performance,best-practices \
     --quiet --chrome-flags="--headless" \
