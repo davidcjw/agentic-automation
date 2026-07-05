@@ -6,7 +6,18 @@
 
 My personal setup to how I manage AI agents.
 
-> **CI:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request — shellcheck on all `*.sh` and `git-hooks/commit-msg`, `node --check` on every `.claude/hooks/*.mjs`, and a `JSON.parse` validation of every `*.json`.
+> **CI:** [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on every push and pull request — shellcheck on all `*.sh` and `git-hooks/commit-msg`, `node --check` on every `.claude/hooks/*.mjs` plus `sh -n git-hooks/commit-msg`, the hook test suite (`node --test .claude/hooks/*.test.mjs`), and a `JSON.parse` validation of every `*.json`.
+
+### Testing
+
+The hook guardrails have unit tests written with Node's built-in [`node:test`](https://nodejs.org/api/test.html) runner (no dependencies to install). Run them with:
+
+```bash
+node --test .claude/hooks/*.test.mjs
+```
+
+- `bash-guardrails.test.mjs` exercises the exported `evaluate()` decision logic (banned GitHub topics, staging `.env`, pushing to `main`/`master`).
+- `commit-msg.test.mjs` shells out to `git-hooks/commit-msg` against temp fixtures to verify AI-attribution stripping.
 
 ## Enabling auto mode and remote-control by default
 
