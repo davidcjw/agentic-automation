@@ -36,6 +36,39 @@ export function evaluate(cmd) {
     };
   }
 
+  // 4. Destructive ops on LIVE persistent state (a running service's data), not
+  //    test scratch. Cause of a real board-data loss: `rm -rf .data` deleted the
+  //    Agent Task Board's live board.json (repo .data/ doubled as prod storage).
+  //    Blocks rm / git clean -x / truncation that names `.data`, `board.json`, or
+  //    the board's Application Support dir — UNLESS the path is clearly temp.
+  const hitsLiveData =
+    /(^|[\s"'~./=])\.data(\/|\b|["'\s]|$)/.test(cmd) ||
+    /\bboard\.json\b/.test(cmd) ||
+    /Application Support\/agent-task-board/.test(cmd);
+  const isTempPath =
+    /(\/tmp\/|\/private\/tmp\/|\/var\/folders\/|\$TMPDIR|\bTMPDIR=|atb-worktrees|mkdtemp|scratchpad|atb-[a-z0-9]+-[a-z0-9]{4,})/i.test(cmd);
+  const isDestructive =
+    /\brm\s+(-\S*\s+)*\S/.test(cmd) ||
+    /\bgit\s+clean\b[^|]*\s-\S*[xX]/.test(cmd) ||
+    />\s*\S*board\.json\b/.test(cmd);
+  if (hitsLiveData && isDestructive && !isTempPath) {
+    return {
+      block: true,
+      reason:
+        "Blocked: this deletes/overwrites live Agent Task Board state (.data / board.json / its Application Support dir) — the running control plane's persistent board, NOT test scratch. If you meant a throwaway board, point BOARD_DATA_DIR at a $TMPDIR path and delete that exact path instead. To touch the real one, back it up and run it yourself.",
+    };
+  }
+
+  // 4b. `git clean -x/-X` removes gitignored files too — that includes a repo's
+  //     live `.data/` board without ever naming it. Block outside temp dirs.
+  if (/\bgit\s+clean\b/.test(cmd) && /\s-\S*[xX]/.test(cmd) && !isTempPath) {
+    return {
+      block: true,
+      reason:
+        "Blocked: `git clean -x/-X` removes gitignored files, which includes a project's live `.data/` (e.g. the Agent Task Board's board.json). Run `git clean -n` to preview, then run it yourself if you're sure.",
+    };
+  }
+
   return { block: false };
 }
 
